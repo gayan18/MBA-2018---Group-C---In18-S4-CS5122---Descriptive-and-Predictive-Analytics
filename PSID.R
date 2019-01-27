@@ -1,58 +1,80 @@
-psidData1 = read.csv("PSID.csv", header = TRUE)
-psidData = psidData1[!is.na(psidData1$educatn),]
+
+psidRawData = read.csv("PSID.csv", header = TRUE)
+
+# check whether their is row data
+which(is.na(psidRawData), arr.ind = TRUE)
+
+#To remove data with missing values in educatn column
+psidData = psidRawData[!is.na(psidRawData$educatn),]
+
+which(is.na(psidData), arr.ind = TRUE)
+
+#To remove error in dataset
+psidDataClean = psidData[psidData$kids < 97,]
+nrow(psidDataClean)
+
+#To remove error in dataset
+psidDataClean = psidData[psidData$educatn < 95,]
+nrow(psidDataClean)
+
+#view summary
 summary(psidData)
 
-kc = kmeans(psidData[,4:8], 2)
-kc
 
-plot(psidData[,4:5], col=kc$cluster)
-points(kc$centers[,1:2], col=1:2,pch=8,cex=2)
+# average earnings - group by marital status
+em = aggregate(earnings~married, psidDataClean, mean)
 
-plot(psidData[,5:6], col=kc$cluster)
-points(kc$centers[,2:3],col=1:2, pch=8,cex=2)
+# variance of earnings - group by marital status
+aggregate(earnings~married, psidDataClean, sd)
 
-plot(psidData[,4:8], col=kc$cluster)
-points(kc$centers[,3:4],col=1:2, pch=8,cex=2)
 
-psid = read.csv("PSID.csv",header = TRUE)
+#Bar Chart - Average earning by marital status 
+barplot(em$earnings, col=c("blue"),
+        main= "Average Earning by Marital Status" ,xlab="Marital Status", ylim = c(0,20000) ,ylab="Total Avg Earning", axisnames = TRUE,cex.axis = par("cex.axis"), cex.names=par("cex.axis"))
 
-psid
+?barplot
 
-dems <- psid[psid$educatn != "NA",]
-dems
+# average education - group by marital status
+aggregate(educatn~married, psidDataClean, mean)
 
-aggregate(earnings~married, psid, mean)
+# variance of education - group by marital status
+aggregate(educatn~married, psidDataClean, sd)
 
-aggregate(earnings~married, psid, sd)
-
-aggregate(educatn~married, psid, mean)
-
-aggregate(educatn~married, psid, sd)
 
 
 library(e1071)
-skewness(psid$age)
+skewness(psidDataClean$age)
 
-plot(psid$age,psid$educatn, col="blue", cex.axis = 0.5)
+plot(psidDataClean$age,psidDataClean$hours, col="blue", cex.axis = 0.5)
 
-pie(table(psid$married))
+pie(table(psidDataClean$married))
 
-hist(psid$educatn)
 
-hist(psid$age)
+hist(psidDataClean$educatn)
 
-#####
-psidData = read.csv("PSID.csv", header = TRUE)
-psid =  psidData[rowSums(is.na(psidData)) ==0,]
-psid
+hist(psidDataClean$age)
 
-earningAvg = aggregate(earnings ~ age, psid, mean)
+# K- Means
+kc = kmeans(psidDataClean[,4:8], 2)
+kc
+
+plot(psidDataClean[,4:5], col=kc$cluster)
+points(kc$centers[,1:2], col=1:2,pch=8,cex=2)
+
+plot(psidDataClean[,5:6], col=kc$cluster)
+points(kc$centers[,2:3],col=1:2, pch=8,cex=2)
+
+plot(psidDataClean[,4:8], col=kc$cluster)
+points(kc$centers[,3:4],col=1:2, pch=8,cex=2)
+
+
+earningAvg = aggregate(earnings ~ age, psidDataClean, mean)
 earningAvg
 
 #bar chart
 barplot(earningAvg$earnings, col=c("blue"),
-        main= "Average Earning by Age" ,xlab="age", ylim = c(0,20000) ,ylab="Total Avg Earning", axisnames = TRUE,cex.axis = par("cex.axis"), cex.names=par("cex.axis"), )
-?barplot
+        main= "Average Earning by Age" ,xlab="age", ylim = c(0,20000) ,ylab="Total Avg Earning", axisnames = TRUE,cex.axis = par("cex.axis"), cex.names=par("cex.axis"))
+
 
 #line chart
 x <- earningAvg$age
@@ -60,7 +82,7 @@ y <- earningAvg$earnings
 plot(x,y, type = "l", col=c("red") )
 
 #Kmeans
-kc= kmeans(psid[4],5)
+kc= kmeans(psidDataClean[4],5)
 kc
 
 plot(earningAvg, col=kc$cluster)
@@ -68,6 +90,3 @@ plot(earningAvg$age,avgEarnings$earnings)
 hist(earningAvg$age)
 hist(earningAvg$earnings)
 earningAvg
-#cov(psid$age, psid$earnings)
-
-
