@@ -43,23 +43,33 @@ hist(psid$educatn)
 
 hist(psid$age)
 
-#Madhawi
-psid = read.csv("PSID.csv", header = TRUE)
-psid[,4:7]
-avgEarnings = aggregate(earnings ~ age, psid, mean)
+#Madhavi
+psidData = read.csv("PSID.csv", header = TRUE)
+psid =  psidData[rowSums(is.na(psidData)) ==0,]
+psid
 
+earningAvg = aggregate(earnings ~ age, psid, mean)
+earningAvg
 
+#bar chart
+barplot(earningAvg$earnings, col=c("blue"),
+        main= "Average Earning by Age" ,xlab="age", ylim = c(0,20000) ,ylab="Total Avg Earning", axisnames = TRUE,cex.axis = par("cex.axis"), cex.names=par("cex.axis"), )
+?barplot
+
+#line chart
+x <- earningAvg$age
+y <- earningAvg$earnings
+plot(x,y, type = "l", col=c("red") )
+
+#Kmeans
 kc= kmeans(psid[4],5)
 kc
 
-plot(avgEarnings, col=kc$cluster)
-
-
-
-plot(avgEarnings$age,avgEarnings$earnings)
-hist(avgEarnings$age)
-hist(avgEarnings$earnings)
-avgEarnings
-cov(psid$age, psid$earnings)
+plot(earningAvg, col=kc$cluster)
+plot(earningAvg$age,avgEarnings$earnings)
+hist(earningAvg$age)
+hist(earningAvg$earnings)
+earningAvg
+#cov(psid$age, psid$earnings)
 
 
