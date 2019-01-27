@@ -41,7 +41,6 @@ aggregate(educatn~married, psidDataClean, mean)
 aggregate(educatn~married, psidDataClean, sd)
 
 
-
 library(e1071)
 skewness(psidDataClean$age)
 
@@ -54,16 +53,19 @@ hist(psidDataClean$educatn)
 
 hist(psidDataClean$age)
 
-# K- Means
+# K- Means Clusering
 kc = kmeans(psidDataClean[,4:8], 2)
 kc
 
+# age, educatn
 plot(psidDataClean[,4:5], col=kc$cluster)
 points(kc$centers[,1:2], col=1:2,pch=8,cex=2)
 
+# educatn, earnings
 plot(psidDataClean[,5:6], col=kc$cluster)
 points(kc$centers[,2:3],col=1:2, pch=8,cex=2)
 
+# age, educatn, earnings, hours, kids
 plot(psidDataClean[,4:8], col=kc$cluster)
 points(kc$centers[,3:4],col=1:2, pch=8,cex=2)
 
@@ -82,8 +84,8 @@ y <- earningAvg$earnings
 plot(x,y, type = "l", col=c("red") )
 
 #Kmeans
-kc= kmeans(psidDataClean[4],5)
-kc
+kc2= kmeans(psidDataClean[4],5)
+kc2
 
 plot(earningAvg, col=kc$cluster)
 plot(earningAvg$age,avgEarnings$earnings)
